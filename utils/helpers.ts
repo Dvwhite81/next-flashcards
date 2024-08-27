@@ -1,21 +1,29 @@
-import { COLORS, DIRECTIONS } from './constants';
-import { Category, Problem } from './types';
+import { COLORS } from './constants';
+import { Category, Difficulty, Problem } from './types';
 
 export const getRandomColor = (): string => {
   const random = Math.floor(Math.random() * COLORS.length);
   return COLORS[random];
 };
 
-export const getRandomNumber = (): number => {
+export const getRandomNumber = (difficulty: Difficulty): number => {
   console.log('getNumber:');
-  const random = Math.floor(Math.random() * 13);
+  const max =
+    difficulty === Difficulty.EASY
+      ? 5
+      : difficulty === Difficulty.MEDIUM
+      ? 9
+      : 13;
+  console.log('max:', max);
+  const min = max - 5;
+  const random = Math.floor(Math.random() * (max - min)) + min;
   return random;
 };
 
-export const getMultiplicationProblem = (): Problem => {
-  console.log('getMultiplication');
-  const firstNum = getRandomNumber();
-  const secondNum = getRandomNumber();
+export const getMultiplicationProblem = (difficulty: Difficulty): Problem => {
+  console.log('getMultiplication difficulty:', difficulty);
+  const firstNum = getRandomNumber(difficulty);
+  const secondNum = getRandomNumber(difficulty);
   const category = Category.MULTIPLICATION;
   const answer = firstNum * secondNum;
 
@@ -31,10 +39,10 @@ export const getMultiplicationProblem = (): Problem => {
   };
 };
 
-export const getDivisionProblem = (): Problem => {
-  console.log('getDivision');
-  const secondNum = getRandomNumber();
-  const answer = getRandomNumber();
+export const getDivisionProblem = (difficulty: Difficulty): Problem => {
+  console.log('getDivision difficulty:', difficulty);
+  const secondNum = getRandomNumber(difficulty);
+  const answer = getRandomNumber(difficulty);
   const firstNum = secondNum * answer;
   const category = Category.DIVISION;
 
@@ -50,21 +58,24 @@ export const getDivisionProblem = (): Problem => {
   };
 };
 
-export const getRandomProblem = (): Problem => {
+export const getRandomProblem = (difficulty: Difficulty): Problem => {
   const random = Math.floor(Math.random() * 2);
 
-  if (random === 0) return getMultiplicationProblem();
-  else return getDivisionProblem();
+  if (random === 0) return getMultiplicationProblem(difficulty);
+  else return getDivisionProblem(difficulty);
 };
 
-export const getProblem = (category: Category): Problem => {
+export const getProblem = (
+  category: Category,
+  difficulty: Difficulty
+): Problem => {
   switch (category) {
     case Category.MULTIPLICATION:
-      return getMultiplicationProblem();
+      return getMultiplicationProblem(difficulty);
     case Category.DIVISION:
-      return getDivisionProblem();
+      return getDivisionProblem(difficulty);
     case Category.ALL:
     default:
-      return getRandomProblem();
+      return getRandomProblem(difficulty);
   }
 };
